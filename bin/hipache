@@ -2,52 +2,30 @@
 
 'use strict';
 
-var fs = require('fs'),
-    path = require('path'),
+var fs    = require('fs'),
+    path  = require('path'),
+    util  = require('util'),
     cluster = require('cluster'),
-    util = require('util'),
-    argv = require('optimist').argv,
-    master = require('../lib/master'),
-    worker = require('../lib/worker');
+    program = require('commander');
 
-var help = [
-    'usage: hipache [options]',
-    '',
-    'Starts a hipache server',
-    '',
-    'options:',
-    '   -c, --config CONFIGFILE     Location of the configuration file',
-    '   -h, --help                  Display help'
-].join('\n');
+var master = require('../lib/master'),
+    worker = require('../lib/worker')
 
-var config;
+program
+  .version('0.2.4')
+  .option('-c, --config [file]', 'CONFIGFILE Location of the configuration file')
+  .parse(process.argv);
 
+if (!program.config) program.help();
 
-if (argv.h || argv.help) {
-    return util.puts(help);
-}
+var data    = fs.readFileSync(program.config),
+    config  = JSON.parse(data);
 
-if (argv.c || argv.config) {
-    var configFile = argv.c ? argv.c : argv.config;
-    var data = fs.readFileSync(configFile);
-    util.log('Loading config from ' + configFile);
-    config = JSON.parse(data);
-} else {
-    config = (function (configFile) {
-        if (process.env.SETTINGS_FLAVOR !== undefined) {
-            path = configFile.replace(/\.json$/, '_' + process.env.SETTINGS_FLAVOR + '.json');
-        }
-        util.log('Loading config from ' + configFile);
-        var data = fs.readFileSync(configFile);
-        return JSON.parse(data);
-    }(path.resolve(__dirname, '..', 'config', 'config.json')));
-}
+util.log('Loading config from ' + program.config);
+ if (cluster.isMaster) {
+      master(config);
+      util.log('Server is running. ' + JSON.stringify(config.server));
+  } else {
+      worker(config);
+  }
 
-if (cluster.isMaster) {
-    // Run the master
-    master(config);
-    util.log('Server is running. ' + JSON.stringify(config.server));
-} else {
-    // Run the worker
-    worker(config);
-}
