@@ -2,30 +2,14 @@
 
 'use strict';
 
-var fs    = require('fs'),
-    path  = require('path'),
-    util  = require('util'),
-    cluster = require('cluster'),
-    program = require('commander');
-
-var master = require('../lib/master'),
-    worker = require('../lib/worker')
+var program = require('commander'),
+    hipache = require('../lib/hipache')
 
 program
   .version('0.2.4')
-  .option('-c, --config [file]', 'CONFIGFILE Location of the configuration file')
+  .option('-c, --config [file]', 'Location of the configuration file')
   .parse(process.argv);
 
 if (!program.config) program.help();
 
-var data    = fs.readFileSync(program.config),
-    config  = JSON.parse(data);
-
-util.log('Loading config from ' + program.config);
- if (cluster.isMaster) {
-      master(config);
-      util.log('Server is running. ' + JSON.stringify(config.server));
-  } else {
-      worker(config);
-  }
-
+Hipache = hipache.run(program.config)
