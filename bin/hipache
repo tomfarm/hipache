@@ -12,6 +12,21 @@ program
 
 if (!program.config) program.help();
 
+    header_defaults = {
+      'x-forwarded-for': remoteAddr,
+      'x-real-ip': remoteAddr,
+      'x-forwarded-protocol' : req.connection.pair ? 'https' : 'http',
+      'x-forwarded-proto': req.connection.pair ? 'https' : 'http',
+      'x-forwarded-port': req.connection.pair ? '443' : '80'
+    }
+
+    _.each(header_defaults, function(default) {
+      console.log(default)
+    })
+
+
 var hipache = new Hipache
 
 hipache.run(program.config)
+
+
