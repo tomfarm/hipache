@@ -3,7 +3,7 @@
 'use strict';
 
 var program = require('commander'),
-    hipache = require('../lib/hipache')
+    Hipache = require('../lib/hipache')
 
 program
   .version('0.2.4')
@@ -12,4 +12,6 @@ program
 
 if (!program.config) program.help();
 
-Hipache = hipache.run(program.config)
+var hipache = new Hipache
+
+hipache.run(program.config)
