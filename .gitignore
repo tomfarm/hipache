@@ -4,3 +4,5 @@ node_modules
 *.rdb
 *.pyc
 *~
+config/config-local.json
+
