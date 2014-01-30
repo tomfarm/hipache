@@ -134,6 +134,23 @@ The frontend identifer is `mywebsite`, it could be anything.
         2) "http://192.168.0.42:80"
         3) "http://192.168.0.43:80"
 
+
+4. __SSL SNI Support__
+
+Additional TLS/SSL-Keys can be added for use with SNI (Server Name Indication). Be aware that not every client out there supports SNI and this can result in certificate error notifications.
+
+Taking the example above I want to add an TLS/SSL key to www.dotcloud.com.
+
+Here are the steps I will follow:
+
+        $ redis-cli hmset sni:www.dotcloud.com domain www.dotcloud.com key "`cat dotcloud.key`" cert "`cat dotcloud.cert`"
+        OK
+
+        $ redis-cli publish "sni configuration" reload
+        (integer) 10
+
+
+
 While the server is running, any of these steps can be re-run without messing
 up with the traffic.
 
