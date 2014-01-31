@@ -41,10 +41,10 @@
         "url" : "http://www.dotcloud.com/"
     },
     "maintainer" : [
-        "Sam Alba <sam.alba@gmail.com>"
+        "Thomas Winkler <tom@formrausch.com>"
     ],
     "repository": {
         "type": "git",
-        "url": "http://github.com/dotcloud/hipache.git"
+        "url": "http://github.com/tomfarm/hipache.git"
     }
 }
